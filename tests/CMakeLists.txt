@@ -1,0 +1,3 @@
+add_subdirectory(catch2)
+add_subdirectory(libfastsignals_stress_tests)
+add_subdirectory(libfastsignals_unit_tests)

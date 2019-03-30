@@ -1,5 +1,5 @@
 #include "catch2/catch.hpp"
-#include "libfastsignals/include/signal.h"
+#include "libfastsignals/signal.h"
 #include <array>
 #include <mutex>
 #include <random>
@@ -17,52 +17,52 @@ using void_slot = void_signal::slot_type;
 class named_entity
 {
 public:
-	std::string name() const
-	{
-		std::lock_guard lock(m_nameMutex);
-		return m_name;
-	}
+    std::string name() const
+    {
+        std::lock_guard lock(m_nameMutex);
+        return m_name;
+    }
 
-	void fire_changed(std::string value)
-	{
-		bool fire = false;
-		{
-			std::lock_guard lock(m_nameMutex);
-			if (m_name != value)
-			{
-				m_name = std::move(value);
-				fire = true;
-			}
-		}
-		if (fire)
-		{
-			m_nameChanged(value);
-		}
-	}
+    void fire_changed(std::string value)
+    {
+        bool fire = false;
+        {
+            std::lock_guard lock(m_nameMutex);
+            if (m_name != value)
+            {
+                m_name = std::move(value);
+                fire = true;
+            }
+        }
+        if (fire)
+        {
+            m_nameChanged(value);
+        }
+    }
 
-	connection on_name_changed(string_slot slot)
-	{
-		return m_nameChanged.connect(std::move(slot));
-	}
+    connection on_name_changed(string_slot slot)
+    {
+        return m_nameChanged.connect(std::move(slot));
+    }
 
 private:
-	mutable std::mutex m_nameMutex;
-	std::string m_name;
-	signal<void(std::string)> m_nameChanged;
+    mutable std::mutex m_nameMutex;
+    std::string m_name;
+    signal<void(std::string)> m_nameChanged;
 };
 
 unsigned get_next_seed()
 {
-	static std::minstd_rand seedEngine(777);
-	return seedEngine();
+    static std::minstd_rand seedEngine(777);
+    return seedEngine();
 }
 
 size_t get_random_index(size_t size)
 {
-	thread_local std::minstd_rand disconnectRandomEngine{ get_next_seed() };
-	std::uniform_int_distribution<size_t> disconnectIndexDistribution{ 0, size - 1 };
+    thread_local std::minstd_rand disconnectRandomEngine{ get_next_seed() };
+    std::uniform_int_distribution<size_t> disconnectIndexDistribution{ 0, size - 1 };
 
-	return disconnectIndexDistribution(disconnectRandomEngine);
+    return disconnectIndexDistribution(disconnectRandomEngine);
 }
 } // namespace
 
